@@ -1,4 +1,5 @@
 # ABC-Algorithm
+[![OEIS A395816](https://img.shields.io/badge/OEIS-A395816-blue)](https://oeis.org/A395816)
 
 Self‑learning heuristic search for abc triples.  
 Discoverer of OEIS sequence **[A395816](https://oeis.org/A395816)** (c‑values with quality > 1.2).
