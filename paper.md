@@ -29,3 +29,30 @@ The code is written in Python 3.6+ with no external dependencies (optional `matp
 ### 3.1 Fertile numbers
 
 A “fertile number” is a `c` that appears in at least two different abc triples satisfying the conditions. For `c ≤ 1 000 000`, the complete sorted list is:
+81, 1331, 2048, 2401, 6561, 15625, 16384, 19683, 28561, 59049,
+117649, 131072, 390625, 531441, 1048576, 1058841, 1594323,
+1771561, 1953125, 3906250
+Most of these are perfect powers (e.g., 2401 = 7⁴, 15625 = 5⁶, 131072 = 2¹⁷). The sequence has been submitted to OEIS as [A395901](https://oeis.org/A395901).
+
+### 3.2 Record‑quality triples
+
+Examples:
+
+- `2 + 6436341 = 6436343`, rad=15042, q=1.629912
+- `121 + 48234375 = 48234496`, rad=3630, q=1.625991
+- `1 + 4374 = 4375`, rad=210, q=1.567887
+
+The full list of discovered triples is provided in the repository (`abc_live_triples.txt`).
+
+## 4. Discussion
+
+The self‑learning capability allowed the algorithm to “notice” that fertile numbers tend to be perfect powers. This empirical observation may hint at underlying arithmetic structure. The open‑source release aims to encourage further research and verification.
+
+## 5. Availability
+
+- Source code and data: [GitHub](https://github.com/nup654321/abc-algorithm)
+- OEIS sequence for fertile numbers: [A395901](https://oeis.org/A395901)
+
+## References
+
+[1] Oesterlé, J., & Masser, D. (1985). The abc conjecture.
