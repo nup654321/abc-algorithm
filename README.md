@@ -1,4 +1,9 @@
 # Algorithm for Searching abc Triples with Self‑Learning Heuristics: A Scientific Workflow
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.6+](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/)
+[![GitHub stars](https://img.shields.io/github/stars/nup654321/abc-algorithm?style=social)](https://github.com/nup654321/abc-algorithm/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/nup654321/abc-algorithm?style=social)](https://github.com/nup654321/abc-algorithm/network/members)
+[![Last commit](https://img.shields.io/github/last-commit/nup654321/abc-algorithm)](https://github.com/nup654321/abc-algorithm/commits/main)
 
 **Author:** Andrey Drozdov  
 **OEIS sequences (discovered by this algorithm):** [A395901](https://oeis.org/A395901) (fertile c), [A395816](https://oeis.org/A395816) (c with q>1.2), [A395858](https://oeis.org/A395858) (pure c)  
