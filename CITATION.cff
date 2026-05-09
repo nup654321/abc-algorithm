@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Drozdov"
+    given-names: "Andrey"
+title: "Algorithm for Searching abc Triples with Self‑Learning Heuristics"
+version: 1.0.0
+date-released: 2026-05-09
+url: "https://github.com/nup654321/abc-algorithm"
+license: MIT
