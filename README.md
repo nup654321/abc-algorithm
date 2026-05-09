@@ -1,86 +1,112 @@
-# ABC-Algorithm
-[![OEIS A395816](https://img.shields.io/badge/OEIS-A395816-blue)](https://oeis.org/A395816)
+# ABC-Algorithm: Self‑Learning Heuristic for abc Triples
 
-Self‑learning heuristic search for abc triples.  
-Discoverer of OEIS sequence **[A395816](https://oeis.org/A395816)** (c‑values with quality > 1.2).
+**Author:** Andrey Drozdov  
+**OEIS sequences:** [A395901](https://oeis.org/A395901) (fertile c), [A395816](https://oeis.org/A395816) (c with q>1.2), [A395858](https://oeis.org/A395858) (pure c)  
+**License:** MIT  
 
-## Algorithm
+## Abstract
 
-The code combines several search strategies:
-- **Genetic primes** – the set of “genetic” primes evolves based on factors of found triples.
-- **Geometric detector** – searches for `a` near `c/2` (parabola) and around an ellipse‑shifted centre.
-- **Chaotic billiards** – random walk exploring the search space.
-- **Quantum superposition** – explores different `q` for the deformation `p³/q`.
-- **Purity theory** – a heuristic that marks triples with a special condition (✨).
+This repository contains a self‑learning heuristic algorithm for searching high‑quality abc triples (a,b,c) with a+b=c, gcd(a,b)=1, and rad(a*b*c) < c. The algorithm integrates **18 search methods**, including genetic primes, geometric detectors (parabola/ellipse), chaotic billiards, quantum superposition, and a novel "purity" condition. It also features **self‑learning** – after each run it updates its parameters (small‑a list, search radius, genetic primes) based on the triples it discovers.
 
-## Commands and default values
+The algorithm discovered a set of **fertile numbers** – c‑values that appear in more than one abc triple. The complete list for c ≤ 1 000 000 is given below. Many of these numbers are perfect powers (p^k). Record‑quality triples (e.g., 2+6436341=6436343, q=1.629912) are also included.
 
-| Command | Description | Default |
-|---------|-------------|---------|
-| `set limit N` | Upper bound for `c` | 250 000 000 |
-| `set smooth N` | Upper bound for smooth numbers | 50 000 000 |
-| `set quality N` | Minimum quality `q = log(c)/log(rad(abc))` | 1.20 |
-| `set threshold N` | Candidate filter: `rad(c) < c^threshold` | 0.45 |
-| `set radius N` | Search radius for parabola / ellipse | 5000 |
-| `set workers N` | Number of parallel threads | CPU count |
-| `set small "a1,a2,…"` | List of small `a` for `fast` mode and method D | 1,2,3,5 |
-| `set full_max_c N` | Maximum `c` for `full` mode | 10 000 000 |
-| `set full_genetic "p1,p2,…"` | Primes used to generate `c` in `full` mode | 2,3,5,7,11,13 |
+## Table of Contents
 
-### Super‑methods (toggle with `super A`, `super B`, `super C`, `super D`)
+- [Algorithm description](#algorithm-description)
+- [Main results](#main-results)
+- [Running the algorithm](#running-the-algorithm)
+- [Commands reference](#commands-reference)
+- [Output files](#output-files)
+- [Citation](#citation)
+- [License](#license)
 
-| Method | Name | Description |
-|--------|------|-------------|
-| A | Genetic resonance | Generates `c` from powers, products, sums/differences of genetic primes; tests small `a`. |
-| B | Geometric detector | Searches `a` near `c/2` (parabola) and around ellipse‑shifted centre. |
-| C | Chaotic & quantum | Random walk (billiard) + superposition of `q` for `p³/q`. |
-| D | Exact small‑`a` | Iterates over the `small` list for every candidate `c`. |
+## Algorithm description
 
-### How super‑methods work (detailed)
+The algorithm implements 18 heuristic methods (see `paper.md` and source code for details). Key components:
 
-- **Method A (Genetic resonance)**  
-  Generates candidate `c` as: powers of genetic primes (`p^e`), products of two powers (`p1^e1 * p2^e2`), sums and absolute differences of powers. For each `c`, it tests `a` from a small fixed list (1,2,3,5,7,11,13,17,19,23) plus `a=1` separately.
+1. **Genetic primes** – a list of primes that evolves based on frequency in found triples.
+2. **Geometric detector** – searches a in the vicinity of c/2 (parabola) and around an offset center (ellipse).
+3. **Chaotic billiards + quantum superposition** – random walk and simultaneous q‑value exploration.
+4. **Purity condition** – flags triples where Φ = a^(e·b·c/rad) is extremely close to an integer.
+5. **Self‑learning** – after each run, the algorithm updates:
+   - the list of small `a` (adding those that appear in high‑quality triples),
+   - the search radius (95th percentile of distances),
+   - the genetic prime list (weighted by quality).
 
-- **Method B (Geometric detector)**  
-  For a given `c`, it computes `center = c//2` and tests `a = center ± k*step` within radius `PREDICTION_RADIUS` (parabola). Also, if `rad(c)` is small, it shifts the centre by an offset dependent on `log(rad(c))/log(c)` and tests an ellipse‑shaped neighbourhood.
+The code is written in Python 3.6+ and uses only standard libraries. No external dependencies are required (except optional `matplotlib` for plotting).
 
-- **Method C (Chaotic billiard + quantum superposition)**  
-  Performs a random walk from a random starting `a`, reflecting at boundaries `[1, c//2]`. Additionally, for `c` close to a perfect power `p^e`, it tries `a = floor(p^e / q)` for many `q` (superposition).
+## Main results
 
-- **Method D (Exact small‑a)**  
-  Simply iterates over the user‑supplied `small` list (or default `[1,2,3,5]`) for every candidate `c` from the smooth‑number sieve.
+### Fertile numbers (OEIS A395901)
 
-### Information and actions
+The following numbers c (c ≤ 1 000 000) appear in at least two different abc triples with rad(abc) < c and gcd(a,b)=1:
+81, 1331, 2048, 2401, 6561, 15625, 16384, 19683, 28561, 59049,
+117649, 131072, 390625, 531441, 1048576, 1058841, 1594323,
+1771561, 1953125, 3906250
 
-| Command | Effect |
-|---------|--------|
-| `stats` | Show number of triples, max/average quality, top 5 triples. |
-| `fertile` | Show numbers `c` that appear in more than one triple. |
-| `pure` | Show pure triples (marked `✨`). |
-| `methods` | Show per‑method statistics (methods 1‑17). |
-| `model` | Display the learned model (genetic primes, optimal radius). |
-| `optimize` | Automatically disable super‑methods that found zero triples. |
-| `save` | Save current configuration and learned model. |
-| `clear` | Clear all found triples. |
-| `run` | Standard search (all active super‑methods). |
-| `fast` | Fast search: **only** small `a` from the `small` list, no other methods. |
-| `full` | Exhaustive search: for `c` generated from `full_genetic` primes, test **every** `a` from 1 to `c/2`. Slow but no misses. |
-| `quit` | Exit the program. |
+Many are perfect powers: e.g., 2401 = 7⁴, 15625 = 5⁶, 131072 = 2¹⁷, 390625 = 5⁸.
 
-## Output files
+### Record‑quality triples
 
-| File | Content |
-|------|---------|
-| `abc_live_triples.txt` | All discovered triples with timestamp, quality, purity marker. |
-| `abc_backup.txt` | Backup copy of the triples. |
-| `abc_fertile_c.txt` | List of fertile `c` (multiple triples). |
-| `abc_pure_triples.txt` | Triples flagged as pure (✨). |
-| `abc_model.json` | Learned model (genetic primes, optimal radius, etc.). |
+| Triple | rad(abc) | quality q |
+|--------|----------|-----------|
+| 2 + 6436341 = 6436343 | 15042 | 1.629912 |
+| 121 + 48234375 = 48234496 | 3630 | 1.625991 |
+| 1 + 4374 = 4375 | 210 | 1.567887 |
+| ... (see `triples_examples.txt`) | ... | ... |
 
-## License
+All discovered triples are stored in `abc_live_triples.txt` (generated when you run the algorithm).
 
-MIT License – see `LICENSE` file.
+## Running the algorithm
 
-## Author
+### Requirements
 
-**Andrey Drozdov** – [A395816](https://oeis.org/A395816)
+- Python 3.6 or higher
+- No external libraries needed (basic installation is sufficient)
+
+### Quick start
+
+```bash
+git clone https://github.com/nup654321/abc-algorithm.git
+cd abc-algorithm
+python abc_triple_modes.py
+Then enter commands at the > prompt.
+
+Commands reference
+Command	Description
+run	Standard search (all active super‑methods A, B, D by default)
+fast	Fast search – only small a from the small list
+full	Exhaustive search (all a for c generated from powers of primes)
+super A/B/C/D	Enable/disable specific super‑method
+set limit N	Upper bound for c (default 250 000 000)
+set smooth N	Upper bound for smooth numbers (default 30 000 000)
+set quality N	Minimum quality q (default 1.20)
+set threshold N	Filter: rad(c) < c^threshold (default 0.45)
+set radius N	Search radius for parabola/ellipse (default 5000)
+set small "a1,a2,…"	List of small a (default 1,2,3,5,7,11,13)
+set full_max_c N	Max c for full mode (default 10 000 000)
+stats	Show triple statistics
+fertile	Show fertile numbers found so far
+pure	Show pure triples (satisfying purity condition)
+methods	Show per‑method statistics
+model	Display learned model
+optimize	Automatically disable super‑methods that found zero triples
+save	Save configuration and model
+clear	Clear all found triples
+quit	Exit
+Output files
+File	Content
+abc_live_triples.txt	All discovered triples (timestamp, a+b=c, q, rad, purity marker ✨)
+abc_backup.txt	Backup copy
+abc_fertile_c.txt	Fertile numbers found during the current run
+abc_pure_triples.txt	Pure triples
+abc_model.json	Learned parameters (small‑a list, genetic primes, optimal radius)
+Citation
+If you use this algorithm or its results in your research, please cite:
+@software{Drozdov2026_abc,
+  author = {Drozdov, Andrey},
+  title = {Self‑learning heuristic for abc triples},
+  year = {2026},
+  url = {https://github.com/nup654321/abc-algorithm},
+  note = {Includes discovery of fertile numbers (OEIS A395901)}
+}
