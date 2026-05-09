@@ -1,14 +1,14 @@
-# ABC-Algorithm: Self‑Learning Heuristic for abc Triples
+# Algorithm for Searching abc Triples with Self‑Learning Heuristics
 
 **Author:** Andrey Drozdov  
-**OEIS sequences:** [A395901](https://oeis.org/A395901) (fertile c), [A395816](https://oeis.org/A395816) (c with q>1.2), [A395858](https://oeis.org/A395858) (pure c)  
+**OEIS sequences (discovered by this algorithm):** [A395901](https://oeis.org/A395901) (fertile c), [A395816](https://oeis.org/A395816) (c with q>1.2), [A395858](https://oeis.org/A395858) (pure c)  
 **License:** MIT  
 
 ## Abstract
 
-This repository contains a self‑learning heuristic algorithm for searching high‑quality abc triples (a,b,c) with a+b=c, gcd(a,b)=1, and rad(a*b*c) < c. The algorithm integrates **18 search methods**, including genetic primes, geometric detectors (parabola/ellipse), chaotic billiards, quantum superposition, and a novel "purity" condition. It also features **self‑learning** – after each run it updates its parameters (small‑a list, search radius, genetic primes) based on the triples it discovers.
+This repository contains a **self‑learning heuristic algorithm whose primary purpose is to find abc triples** (a,b,c) with a+b=c, gcd(a,b)=1, and rad(a*b*c) < c. The algorithm integrates 18 search methods (genetic primes, geometric detectors, chaotic billiards, quantum superposition, purity test, etc.) and uses self‑learning to improve its parameters over time.
 
-The algorithm discovered a set of **fertile numbers** – c‑values that appear in more than one abc triple. The complete list for c ≤ 1 000 000 is given below. Many of these numbers are perfect powers (p^k). Record‑quality triples (e.g., 2+6436341=6436343, q=1.629912) are also included.
+The algorithm has discovered hundreds of triples up to c = 250 000 000, including record‑quality examples (e.g., 2+6436341=6436343, q=1.629912). As a by‑product, it also revealed **fertile numbers** – c‑values that appear in more than one abc triple – and other structural observations.
 
 ## Table of Contents
 
@@ -22,19 +22,15 @@ The algorithm discovered a set of **fertile numbers** – c‑values that appear
 
 ## Algorithm description
 
-The algorithm implements 18 heuristic methods (see `paper.md` and source code for details). Key components:
+The algorithm is designed to efficiently search for abc triples by combining multiple heuristic strategies. Its core components are:
 
-1. **Genetic primes** – a list of primes that evolves based on frequency in found triples.
+1. **Genetic primes** – a list of primes that evolves based on frequency in found triples, used to generate candidate c.
 2. **Geometric detector** – searches a in the vicinity of c/2 (parabola) and around an offset center (ellipse).
-3. **Chaotic billiards + quantum superposition** – random walk and simultaneous q‑value exploration.
-4. **Purity condition** – flags triples where Φ = a^(e·b·c/rad) is extremely close to an integer.
-5. **Self‑learning** – after each run, the algorithm updates:
-   - the list of small `a` (adding those that appear in high‑quality triples),
-   - the search radius (95th percentile of distances),
-   - the genetic prime list (weighted by quality).
+3. **Chaotic billiards + quantum superposition** – random walk and simultaneous q‑value exploration to find non‑obvious triples.
+4. **Purity condition** – a novel heuristic that flags triples with special structure (not required for the main goal, but helps validation).
+5. **Self‑learning** – after each run, the algorithm updates parameters (small‑a list, search radius, genetic primes) to improve future searches.
 
 The code is written in Python 3.6+ and uses only standard libraries. No external dependencies are required (except optional `matplotlib` for plotting).
-
 ## Main results
 
 ### Fertile numbers (OEIS A395901)
